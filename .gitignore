@@ -1,2 +1,8 @@
 # PyCharm
 .idea
+.ipynb_checkpoints
+
+# Python programs
+credentials.py
+
+__pycache__/
