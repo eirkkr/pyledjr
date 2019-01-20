@@ -1,10 +1,11 @@
 # PyCharm
 .idea
+
+# Jupyter
 .ipynb_checkpoints
+notebooks.log
 
 # Python programs
 credentials.py
 
 __pycache__/
-
-.log
