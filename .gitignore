@@ -9,3 +9,5 @@ notebooks.log
 credentials.py
 
 __pycache__/
+debug.log
+data
