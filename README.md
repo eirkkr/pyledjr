@@ -13,3 +13,7 @@ be cleaned and analysed
 * Should give a choice of browser
 * Credentials.py should not exist in git, it should be created at setup, should probably have a setup script for this,
 perhaps based on a template file?
+
+## Dependencies
+
+* ChromeDriver, available at https://sites.google.com/a/chromium.org/chromedriver/downloads 

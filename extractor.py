@@ -1,21 +1,25 @@
 """
-    File name: transaction_extractor.py
+    File name: extractor.py
     Author: Eric Parkin
     Date created: 2019-01-19
     Last modified: 2019-01-27
 """
 
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-import credentials
 import config
-import shutil
+import credentials
 import os
 import time
+from selenium import webdriver
+import shutil
+
 
 chrome_options = webdriver.ChromeOptions()
-prefs = {'download.default_directory': config.data_folder}
+prefs = {
+    'download.default_directory': config.data_folder,
+    'profile.default_content_setting_values.automatic_downloads': 1,
+}
 chrome_options.add_experimental_option('prefs', prefs)
+# chrome_options.add_argument('--headless') # Not working with this turned on
 
 # When complete, put inside a function
 
@@ -50,7 +54,14 @@ def anz_extractor():
     accounts = driver.find_element_by_name('AccountSummaryInd')
     accounts = [x for x in accounts.find_elements_by_tag_name('option')]
 
+    first = True
     for account in accounts[1:]:
+
+        if first:
+            first = False
+        else:
+            time.sleep(30)  # Need to wait between downloads or it won't work
+
         account_text = account.text
         print('account = ', account_text)
         account.click()
@@ -62,8 +73,6 @@ def anz_extractor():
         print('filename = ', filename)
         timestr = time.strftime("%Y-%m-%d_%H-%M-%S_")
         shutil.move(os.path.join(config.data_folder, filename), config.data_folder+'/'+timestr+account_text+'.csv')
-
-        time.sleep(30)  # find how to not do this on the last account
 
     driver.close()
 
