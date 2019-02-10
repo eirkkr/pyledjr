@@ -2,7 +2,7 @@
 
 
 class Credential:
-    def __init__(self, bank, username, password):
+    def __init__(self, bank: object, username: object, password: object) -> object:
         self.bank = bank
         self.username = username
         self.password = password

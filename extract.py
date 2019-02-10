@@ -1,27 +1,35 @@
 """
-    File name: extractor.py
+    File name: extract.py
     Author: Eric Parkin
     Date created: 2019-01-19
-    Last modified: 2019-01-27
+    Last modified: 2019-02-10
 """
 
 import config
 import credentials
+from cryptography.fernet import Fernet
 import os
 import time
 from selenium import webdriver
 import shutil
 
 
+# Create decryption function (maybe this should go in another file??
+def decrypt(secret):
+    decrypted = Fernet(config.key).decrypt(secret).decode()
+    return decrypted
+
+
+# Set chrome options
 chrome_options = webdriver.ChromeOptions()
+
 prefs = {
     'download.default_directory': config.data_folder,
     'profile.default_content_setting_values.automatic_downloads': 1,
 }
 chrome_options.add_experimental_option('prefs', prefs)
-# chrome_options.add_argument('--headless') # Not working with this turned on
 
-# When complete, put inside a function
+# chrome_options.add_argument('--headless') # Not working with this turned on, need to resolve
 
 
 def download_wait(path_to_downloads):
@@ -42,8 +50,8 @@ def anz_extractor():
     driver = webdriver.Chrome(options=chrome_options)
     driver.get('https://www.anz.com/INETBANK/bankmain.asp')
     driver.switch_to.frame(driver.find_element_by_id('main'))
-    driver.find_element_by_name('CorporateSignonCorpId').send_keys(credentials.anz.username)
-    driver.find_element_by_name('CorporateSignonPassword').send_keys(credentials.anz.password)
+    driver.find_element_by_name('CorporateSignonCorpId').send_keys(decrypt(credentials.anz.username))
+    driver.find_element_by_name('CorporateSignonPassword').send_keys(decrypt(credentials.anz.password))
     driver.find_element_by_id('SignonButton').click()
     driver.find_element_by_class_name('listViewAccountWrapperYourAccounts').click()
     driver.find_element_by_class_name('dwnldTransHistoryDiv').click()
@@ -75,6 +83,3 @@ def anz_extractor():
         shutil.move(os.path.join(config.data_folder, filename), config.data_folder+'/'+timestr+account_text+'.csv')
 
     driver.close()
-
-
-anz_extractor()
