@@ -53,12 +53,14 @@ def anz_extractor():
     driver.find_element_by_name('CorporateSignonCorpId').send_keys(decrypt(credentials.anz.username))
     driver.find_element_by_name('CorporateSignonPassword').send_keys(decrypt(credentials.anz.password))
     driver.find_element_by_id('SignonButton').click()
+    driver.find_element_by_id('proceedToIBButton')
+    driver.find_element_by_id('proceedToIBButton').click()  # Sometimes there is a notice
     driver.find_element_by_class_name('listViewAccountWrapperYourAccounts').click()
     driver.find_element_by_class_name('dwnldTransHistoryDiv').click()
     driver.find_element_by_xpath('//*[@id="ANZSrchDtRng"]/option[9]').click()
     driver.find_element_by_name('enterYourOwn').send_keys('731')
     driver.find_element_by_id('extendedTxnDetailsChkBx').click()
-
+    driver.find_element_by_id('')
     accounts = driver.find_element_by_name('AccountSummaryInd')
     accounts = [x for x in accounts.find_elements_by_tag_name('option')]
 
