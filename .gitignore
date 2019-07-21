@@ -6,4 +6,5 @@ credentials.py
 
 __pycache__/
 debug.log
-data
+data/
+*ipynb_checkpoints/
