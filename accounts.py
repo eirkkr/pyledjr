@@ -1,8 +1,6 @@
 """
-Read, interpret and clean up bank transaction data, then save output as
-a parquet file.
-
-TODO: might be better to allow users to define bank parameters in a file
+Read, interpret and clean up raw bank transaction data, then save output
+as a an intermediate parquet file.
 """
 
 import pandas as pd
@@ -10,44 +8,52 @@ import time
 
 
 class BankAccount:
-    def __init__(self, bank: str, account: str):
+    def __init__(self, path: str, bank: str, account: str, column_date: int,
+                 column_desc: int, column_transaction: int):
+
+        self.path = path
         self.bank = bank
         self.account = account
+        self.column_date = column_date
+        self.column_desc = column_desc
+        self.column_transaction = column_transaction
 
-    def clean_file(self, path: str):
-        if self.bank == 'ANZ':
-            df = pd.read_csv(
-                filepath_or_buffer=path,
-                names=['Date', 'Description', 'Debits and credits', 'Balance'],
-                dtype={'Description': str, 'Debits and credits': str,
-                       'Balance': str
-                       },
-                parse_dates=['Date'],
-                dayfirst=True,
-                header=0
+    def clean(self):
+        df = pd.read_csv(
+            filepath_or_buffer=self.path,
+            usecols=[
+                self.column_date,
+                self.column_desc,
+                self.column_transaction
+            ],
+            dtype={
+                self.column_desc: str,
+                self.column_transaction: float
+            },
+            parse_dates=[self.column_date],
+            dayfirst=True,
+            header=None,
+        )
+
+        df = df.assign(Bank=self.bank, Account=self.account)
+
+        df = df.rename(
+            columns={
+                self.column_date: 'Date',
+                self.column_desc: 'Description',
+                self.column_transaction: 'Transaction'
+            }
+        )
+
+        df = df[['Bank', 'Account', 'Date', 'Description', 'Transaction']]
+
+        out_path = (
+            './data/{time}_{bank}_{account}.parquet'
+            .format(
+                time=time.strftime("%Y-%m-%d_%H:%M:%S"),
+                bank=self.bank,
+                account=self.account
             )
-            df = df.assign(Bank=self.bank, Account=self.account)
-
-            df = df[[
-                'Bank',
-                'Account',
-                'Date',
-                'Debits and credits',
-                'Balance',
-                'Description'
-            ]]
-
-            df = df.rename(columns={
-                'Debits and credits': 'Transaction',
-            })
-
-        else:
-            raise Exception('ERROR: Unrecognised bank.')
-
-        out_path = './data/{time}_{bank}_{account}.parquet'.format(
-            time=time.strftime("%Y-%m-%d_%H:%M:%S"),
-            bank=self.bank,
-            account=self.account
         )
 
         df.to_parquet(out_path, index=False, compression=None)
