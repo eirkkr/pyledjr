@@ -1,8 +1,8 @@
 """
-    File name: extract.py
-    Author: Eric Parkin
-    Date created: 2019-01-19
-    Last modified: 2019-02-10
+File name: extract.py
+Author: Eric Parkin
+Date created: 2019-01-19
+Last modified: 2019-02-10
 """
 
 import config
@@ -29,7 +29,8 @@ prefs = {
 }
 chrome_options.add_experimental_option('prefs', prefs)
 
-# chrome_options.add_argument('--headless') # Not working with this turned on, need to resolve
+# chrome_options.add_argument('--headless') # Not working with this
+# turned on, need to resolve
 
 
 def download_wait(path_to_downloads):
@@ -46,16 +47,28 @@ def download_wait(path_to_downloads):
 
 
 def anz_extractor():
-    # Extracts ANZ bank transactions using the users credentials, and saves them in the specified folder
+    # Extracts ANZ bank transactions using the users credentials, and
+    # saves them in the specified folder
     driver = webdriver.Chrome(options=chrome_options)
     driver.get('https://www.anz.com/INETBANK/bankmain.asp')
     driver.switch_to.frame(driver.find_element_by_id('main'))
-    driver.find_element_by_name('CorporateSignonCorpId').send_keys(decrypt(credentials.anz.username))
-    driver.find_element_by_name('CorporateSignonPassword').send_keys(decrypt(credentials.anz.password))
+
+    driver.find_element_by_name('CorporateSignonCorpId').send_keys(
+        decrypt(credentials.anz.username))
+
+    driver.find_element_by_name('CorporateSignonPassword').send_keys(
+        decrypt(credentials.anz.password))
+
     driver.find_element_by_id('SignonButton').click()
     driver.find_element_by_id('proceedToIBButton')
-    driver.find_element_by_id('proceedToIBButton').click()  # Sometimes there is a notice
-    driver.find_element_by_class_name('listViewAccountWrapperYourAccounts').click()
+
+    # Sometimes there is a notice
+    driver.find_element_by_id('proceedToIBButton').click()
+
+    driver.find_element_by_class_name(
+        'listViewAccountWrapperYourAccounts'
+    ).click()
+
     driver.find_element_by_class_name('dwnldTransHistoryDiv').click()
     driver.find_element_by_xpath('//*[@id="ANZSrchDtRng"]/option[9]').click()
     driver.find_element_by_name('enterYourOwn').send_keys('731')
@@ -77,11 +90,19 @@ def anz_extractor():
         account.click()
         driver.find_element_by_id('ANZSrchDtRng').click()
 
-        driver.find_element_by_name('Action.ANZAccounts.DwnldTransactionsCIS').click()
+        driver.find_element_by_name(
+            'Action.ANZAccounts.DwnldTransactionsCIS'
+        ).click()
+
         download_wait(config.data_folder)
-        filename = max([config.data_folder+'/'+f for f in os.listdir(config.data_folder)], key=os.path.getctime)
+
+        filename = max(
+            [config.data_folder+'/'+f for f in os.listdir(config.data_folder)],
+            key=os.path.getctime)
+
         print('filename = ', filename)
         timestr = time.strftime("%Y-%m-%d_%H-%M-%S_")
-        shutil.move(os.path.join(config.data_folder, filename), config.data_folder+'/'+timestr+account_text+'.csv')
+        shutil.move(os.path.join(config.data_folder, filename),
+                    config.data_folder+'/'+timestr+account_text+'.csv')
 
     driver.close()
