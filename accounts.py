@@ -1,6 +1,6 @@
 """
 Read, interpret and clean up raw bank transaction data, then save output
-as a an intermediate parquet file.
+as a temporary parquet file to be combined afterwards.
 """
 
 import pandas as pd
