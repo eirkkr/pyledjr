@@ -1,8 +1,8 @@
 # pyledjr (python ledger)
 
-Pyledjr is a simple, free, open-source, python-based personal finace tool, which can automatically download, tranform/clean/combine, and visualise bank transaction data.
+Pyledjr is a simple, free, open-source, python-based personal finace tool, which can automatically download, transform/clean/combine, and visualise bank transaction data.
 
-This project is a work in progress, stay tuned!
+Work in progress, stay tuned!
 
 ## Features
 
