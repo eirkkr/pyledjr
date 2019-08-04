@@ -1,19 +1,13 @@
 # TODO: these objects should be generated from user input
 import accounts
 from os import listdir
+import pandas as pd
+import shutil
 
-anz_access_advantage = [f for f in listdir("./data/ANZ_AccessAdvantage/")]
-anz_cash_investment = [f for f in listdir("./data/ANZ_CashInvestment/")]
-anz_online_saver_files = [f for f in listdir("./data/ANZ_OnlineSaver/")]
-mebank_transaction = [f for f in listdir("./data/MEBank_EverydayTransaction/")]
-mebank_online_savings = [f for f in listdir("./data/MEBank_OnlineSavings/")]
-ubank_usaver = [f for f in listdir("./data/UBank_USaver/")]
-ubank_usaver_ultra = [f for f in listdir("./data/UBank_USaverUltra/")]
-
-account_settings = {
-    "ANZ_CashInvestment": {
+ACCOUNTS = {
+    "ANZ_AccessAdvantage": {
         "bank": "ANZ",
-        "account": "ANZ_CashInvestment",
+        "account": "AccessAdvantage",
         "column_date": 0,
         "column_transaction": 1,
         "column_desc": 2,
@@ -21,9 +15,9 @@ account_settings = {
         "column_to": 4,
         "column_notes": 7,
     },
-    "ANZ_EverydayTransaction": {
+    "ANZ_CashInvestment": {
         "bank": "ANZ",
-        "account": "EverydayTransaction",
+        "account": "CashInvestment",
         "column_date": 0,
         "column_transaction": 1,
         "column_desc": 2,
@@ -43,19 +37,52 @@ account_settings = {
         },
 }
 
-anz_online_saver = list()
-for filename in anz_online_saver_files:
 
-    kwargs = account_settings["ANZ_OnlineSaver"]
-    kwargs["path"] = (
-            "./data/"
-            + kwargs["bank"]
-            + "_"
-            + kwargs["account"]
-            + "/"
-            + filename
+def _clean_account(account: str):
+    files = [f for f in listdir("./data/" + account)]
+    file_list = list()
+    for filename in files:
+
+        kwargs = ACCOUNTS[account]
+        kwargs["path"] = (
+                "./data/"
+                + kwargs["bank"]
+                + "_"
+                + kwargs["account"]
+                + "/"
+                + filename
+        )
+
+        file_list.append(accounts.BankAccount(**kwargs))
+
+    [f.clean() for f in file_list]
+
+
+[_clean_account(a) for a in ACCOUNTS]
+
+
+cleaned_files = ["./data/.temp/" + f for f in listdir("./data/.temp/")]
+
+data = list()
+data.append(pd.read_parquet("./data/transactions.parquet"))
+[data.append(pd.read_parquet(f)) for f in cleaned_files]
+
+df = (
+    pd.concat(data)
+    .drop_duplicates()
+    .sort_values(by=[
+        "Date",
+        "Bank",
+        "Account",
+        "Transaction",
+        "Description",
+        "From",
+        "To",
+        "Notes",
+    ],
+        ascending=False
     )
+)
 
-    anz_online_saver.append(accounts.BankAccount(**kwargs))
-
-[f.clean() for f in anz_online_saver]
+df.to_parquet("./data/transactions.parquet", compression=None, index=False)
+shutil.rmtree("./data/.temp/")
