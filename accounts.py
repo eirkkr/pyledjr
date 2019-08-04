@@ -57,7 +57,7 @@ class BankAccount:
             })
 
         out_path = (
-            "./data/temp/{time}_{bank}_{account}_{path}.parquet"
+            "./data/.temp/{time}_{bank}_{account}_{path}.parquet"
             .format(
                 time=time.strftime("%Y-%m-%d_%H:%M:%S"),
                 bank=self.bank,
