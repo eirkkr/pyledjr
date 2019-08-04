@@ -1,19 +1,19 @@
-# Transacter (working title)
+# pyledjr (python ledger)
 
-The aim of this project is to be able to automatically download bank transaction data via the web where so the data can
-be cleaned and analysed
+Pyledjr is a simple, free, open-source, python-based personal finace tool, which can automatically download, tranform/clean/combine, and visualise bank transaction data.
 
-## Requirements
+This project is a work in progress, stay tuned!
 
-* Should handle bank credentials securely
-* Should prompt the user to enter bank credentials which is stored securely
-* Should ask where the user wants to store the data
-* Should have urls stored separately, which are called in the program
-* User should input the bank of their choice, which determines the browser procedure and data cleaning
-* Should give a choice of browser
-* Credentials.py should not exist in git, it should be created at setup, should probably have a setup script for this,
-perhaps based on a template file?
+## Features
 
-## Dependencies
+**Web Scraping**
+- Uses the user's bank login credentials (encrypyted for security) to automate downloading of bank transaction data.
+- Dependency on ChromeDriver, available at https://sites.google.com/a/chromium.org/chromedriver/downloads.
+- Can be tedious to set this up. Alternative is to manually download transaction history.
 
-* ChromeDriver, available at https://sites.google.com/a/chromium.org/chromedriver/downloads 
+**Data Cleaning/Combining**
+- Cleans transactions data from each bank account into a consistent format.
+- Combines data and removes duplicates.
+
+**Visualisation**
+- Not yet implemented.
