@@ -8,8 +8,11 @@ import time
 
 
 class BankAccount:
-    def __init__(self, path: str, bank: str, account: str, column_date: int,
-                 column_desc: int, column_transaction: int):
+    def __init__(
+        self, path: str, bank: str, account: str, column_date: int,
+        column_transaction: int, column_desc: int,  column_from=None,
+        column_to=None, column_notes=None
+    ):
 
         self.path = path
         self.bank = bank
@@ -17,14 +20,20 @@ class BankAccount:
         self.column_date = column_date
         self.column_desc = column_desc
         self.column_transaction = column_transaction
+        self.column_from = column_from
+        self.column_to = column_to
+        self.column_notes = column_notes
 
     def clean(self):
         df = pd.read_csv(
             filepath_or_buffer=self.path,
             usecols=[
                 self.column_date,
+                self.column_transaction,
                 self.column_desc,
-                self.column_transaction
+                self.column_from,
+                self.column_to,
+                self.column_notes
             ],
             dtype={
                 self.column_desc: str,
@@ -39,20 +48,21 @@ class BankAccount:
 
         df = df.rename(
             columns={
-                self.column_date: 'Date',
-                self.column_desc: 'Description',
-                self.column_transaction: 'Transaction'
-            }
-        )
-
-        df = df[['Bank', 'Account', 'Date', 'Description', 'Transaction']]
+                self.column_date: "Date",
+                self.column_transaction: "Transaction",
+                self.column_desc: "Description",
+                self.column_from: "From",
+                self.column_to: "To",
+                self.column_notes: "Notes"
+            })
 
         out_path = (
-            './data/{time}_{bank}_{account}.parquet'
+            "./data/temp/{time}_{bank}_{account}_{path}.parquet"
             .format(
                 time=time.strftime("%Y-%m-%d_%H:%M:%S"),
                 bank=self.bank,
-                account=self.account
+                account=self.account,
+                path=self.path.replace("/", "."),
             )
         )
 
