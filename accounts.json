@@ -1,0 +1,32 @@
+{
+  "ANZ_AccessAdvantage": {
+    "bank": "ANZ",
+    "account": "AccessAdvantage",
+    "column_date": 0,
+    "column_transaction": 1,
+    "column_desc": 2,
+    "column_from": 3,
+    "column_to": 4,
+    "column_notes": 7
+  },
+  "ANZ_CashInvestment": {
+    "bank": "ANZ",
+    "account": "CashInvestment",
+    "column_date": 0,
+    "column_transaction": 1,
+    "column_desc": 2,
+    "column_from": 3,
+    "column_to": 4,
+    "column_notes": 7
+  },
+  "ANZ_OnlineSaver": {
+    "bank": "ANZ",
+    "account": "OnlineSaver",
+    "column_date": 0,
+    "column_transaction": 1,
+    "column_desc": 2,
+    "column_from": 3,
+    "column_to": 4,
+    "column_notes": 7
+  }
+}
