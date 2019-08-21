@@ -1,4 +1,3 @@
-# TODO: these objects should be generated from user input
 import accounts
 import os
 import pandas as pd
