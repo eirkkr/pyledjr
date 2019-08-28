@@ -1,12 +1,13 @@
-# vscode
-.vscode/
-
-#vscode
 .vscode
 
 credentials.py
 
-__pycache__/
+__pycache__
 debug.log
-data/
-*.ipynb_checkpoints/
+
+data
+
+dist
+*.egg-info
+
+*.ipynb_checkpoints
